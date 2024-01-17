@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "5gEapWxm3iEfyItxM6Np81cdR54BnjslzDQ34tmTbunly53n9kPKNyq3wGh7tlh/uOOBrDfVtBzmq6+Y6r6Ylw==",
+  "success": true,
+  "projectFilePath": "D:\\3 курс 2024 2 семестр\\Розробка адаптивних web-інтерфейсів\\Lab1\\Lab1\\Lab1.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\maxim\\.nuget\\packages\\microsoft.netcore.ildasm\\8.0.0\\microsoft.netcore.ildasm.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
