@@ -6,12 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<IFootballClubService, FootballClubService>(); // Here I use AddSingleton, because it is possible that the application needs
-                                                                            // only one instance of MatchService for the entire application life cycle.
+                                                                            // only one instance of FootballClubService for the entire application life cycle.
                                                                             // And in order to add items to the List
 
 
 builder.Services.AddSingleton<IFootballPlayerService, FootballPlayerService>(); // Here I use AddSingleton, because it is possible that the application needs
-                                                                                // only one instance of MatchService for the entire application life cycle.
+                                                                                // only one instance of FootballPlayerService for the entire application life cycle.
                                                                                 // And in order to add items to the List
 
 
