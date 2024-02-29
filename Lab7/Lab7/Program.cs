@@ -5,15 +5,19 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IFootballClubService, FootballClubService>(); // ¬икористовую AddScoped, оск≥льки можливо, що потр≥бно створити окремий
-                                                                         // серв≥с дл€ кожного HTTP-запиту.
+builder.Services.AddSingleton<IFootballClubService, FootballClubService>(); // Here I use AddSingleton, because it is possible that the application needs
+                                                                            // only one instance of MatchService for the entire application life cycle.
+                                                                            // And in order to add items to the List
 
 
-builder.Services.AddSingleton<IFootballPlayerService, FootballPlayerService>(); // јналог≥чно, використовую AddScoped дл€ PlayerService.
+builder.Services.AddSingleton<IFootballPlayerService, FootballPlayerService>(); // Here I use AddSingleton, because it is possible that the application needs
+                                                                                // only one instance of MatchService for the entire application life cycle.
+                                                                                // And in order to add items to the List
 
 
-builder.Services.AddSingleton<IMatchesService, MatchesService>(); // “ут використовую AddSingleton, оск≥льки можливо, що в додатку потр≥бен лише один
-                                                                  // екземпл€р MatchService дл€ всього життЇвого циклу додатку.
+builder.Services.AddSingleton<IMatchesService, MatchesService>(); // Here I use AddSingleton, because it is possible that the application needs
+                                                                  // only one instance of MatchService for the entire application life cycle.
+                                                                  // And in order to add items to the List
 
 
 builder.Services.AddControllers();
