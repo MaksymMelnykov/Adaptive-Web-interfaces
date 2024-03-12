@@ -1,12 +1,14 @@
 ﻿using Lab7.Models;
 using Lab7.Services;
 using Lab7.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab7.Controllers
 {
+    [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class FootballPlayerController : ControllerBase
     {
        private readonly IFootballPlayerService _footballPlayerService;
