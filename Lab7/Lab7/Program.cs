@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,16 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddTransient<IUserService>(provider => provider.GetRequiredService<UserService>());
 
+builder.Services.AddScoped<IVersionedService, VersionedService>();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -49,7 +61,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Football Clubs Rest WebAPI", Version = "v1", Description = "This is the API for managing Football Clubs" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Football Clubs and API Versioning Rest WebAPI", Version = "v1", Description = "This is the API for managing Football Clubs" });
+    options.SwaggerDoc("v2", new OpenApiInfo { Title = "API Versioning Rest WebAPI", Version = "v2" });
+    options.SwaggerDoc("v3", new OpenApiInfo { Title = "API Versioning Rest WebAPI", Version = "v3" });
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -84,7 +98,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Football Clubs Rest WebAPI v1"));
+    app.UseSwaggerUI(options => 
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Football Clubs and API Versioning Rest WebAPI v1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "API Versioning Rest WebAPI v2");
+        options.SwaggerEndpoint("/swagger/v3/swagger.json", "API Versioning Rest WebAPI v3");
+    }); 
     app.UseAuthentication();
     app.UseAuthorization();
 }

@@ -39,3 +39,11 @@ D:\3 курс 2024 2 семестр\Розробка адаптивних web-і
 D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
 D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\ClosedXML.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\ExcelNumberFormat.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\Irony.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.Versioning.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\SixLabors.Fonts.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\System.IO.Packaging.dll
+D:\3 курс 2024 2 семестр\Розробка адаптивних web-інтерфейсів\Lab7\Lab7\bin\Debug\net7.0\XLParser.dll
