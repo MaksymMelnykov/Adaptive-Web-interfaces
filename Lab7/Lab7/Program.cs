@@ -6,8 +6,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Lab7.Database;
+using Microsoft.EntityFrameworkCore;
+using Lab7;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddSingleton<IFootballClubService, FootballClubService>(); // Here I use AddSingleton, because it is possible that the application needs
@@ -32,6 +39,28 @@ builder.Services.AddTransient<IUserService>(provider => provider.GetRequiredServ
 
 builder.Services.AddScoped<IVersionedService, VersionedService>();
 
+builder.Services.AddSingleton<MemoryHealthCheckService>();
+builder.Services.AddSingleton<DiskHealthCheckService>();
+builder.Services.AddSingleton<NetworkHealthCheckService>();
+builder.Services.AddSingleton<DatabaseHealthCheckService>();
+
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHealthChecks()
+    .AddCheck<MemoryHealthCheckService>("Memory Health Check", tags: new[] { "memory" })
+    .AddCheck<DiskHealthCheckService>("Disk Health Check", tags: new[] { "disk" })
+    .AddCheck<NetworkHealthCheckService>("Network Health Check", tags: new[] { "network" })
+    .AddDbContextCheck<AppDbContext>("Database Health Check");
+
+builder.Services.AddHealthChecksUI(options =>
+{
+    options.AddHealthCheckEndpoint("Memory Checks", "/health/memory");
+    options.AddHealthCheckEndpoint("Disk Checks", "/health/disk");
+    options.AddHealthCheckEndpoint("Network Checks", "/health/network");
+    options.AddHealthCheckEndpoint("Database Checks", "/health/database");
+}).AddInMemoryStorage();
+
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -39,6 +68,7 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
     options.ApiVersionReader = new UrlSegmentApiVersionReader();
 });
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -104,15 +134,43 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "API Versioning Rest WebAPI v2");
         options.SwaggerEndpoint("/swagger/v3/swagger.json", "API Versioning Rest WebAPI v3");
     }); 
+    app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHealthChecks("/health/memory", new HealthCheckOptions
+        {
+            Predicate = (check) => check.Tags.Contains("memory"),
+            ResponseWriter = CustomHealthCheckResponseWriter.WriteResponse
+        });
+
+        endpoints.MapHealthChecks("/health/disk", new HealthCheckOptions
+        {
+            Predicate = (check) => check.Tags.Contains("disk"),
+            ResponseWriter = CustomHealthCheckResponseWriter.WriteResponse
+        });
+
+        endpoints.MapHealthChecks("/health/network", new HealthCheckOptions
+        {
+            Predicate = (check) => check.Tags.Contains("network"),
+            ResponseWriter = CustomHealthCheckResponseWriter.WriteResponse
+        });
+
+        endpoints.MapHealthChecks("/health/database", new HealthCheckOptions
+        {
+            Predicate = (check) => check.Tags.Contains("database"),
+            ResponseWriter = CustomHealthCheckResponseWriter.WriteResponse
+        });
+    });
 }
 
+app.UseHealthChecksUI(options =>
+{
+    options.UIPath = "/healthchecks-ui";
+});
+
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.UseAuthentication();
 
 app.MapControllers();
 
