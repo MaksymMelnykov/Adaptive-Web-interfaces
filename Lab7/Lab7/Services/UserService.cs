@@ -1,10 +1,12 @@
 ﻿using Lab7.Models;
 using Lab7.Services.Interfaces;
+using Serilog;
 
 namespace Lab7.Services
 {
     public class UserService : IUserService
     {
+        private readonly Serilog.ILogger _logger = Log.ForContext<UserService>();
         protected PasswordService _passwordService = new PasswordService();
         public List<User> _users;
 
@@ -27,24 +29,46 @@ namespace Lab7.Services
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
+            _logger.Information("Getting all users");
+
             return _users;
         }
 
         public async Task<User> GetUserByIdAsync(int id)
         {
-            return _users.FirstOrDefault(user => user.Id == id);
+            _logger.Information("Attempting to get user by id: {UserId}", id);
+
+            var user = _users.FirstOrDefault(user => user.Id == id);
+
+            if (user != null)
+            {
+                _logger.Information("User found: {@User}", user);
+            }
+            else
+            {
+                _logger.Warning("User with id {UserId} not found", id);
+            }
+
+            return user;
         }
 
         public async Task<User> AddUserAsync(User user)
         {
+            _logger.Information("Adding a new user: {@User}", user);
+
             user.Id = _users.Max(u => u.Id) + 1;
             user.PasswordHash = (new PasswordService()).HashPassword(user.PasswordHash);
             _users.Add(user);
+
+            _logger.Information("User added successfully");
+
             return user;
         }
 
         public async Task<User> UpdateUserAsync(int id, User user)
         {
+            _logger.Information("Attempting to update user with id: {UserId}", id);
+
             var existingUser = _users.FirstOrDefault(u => u.Id == id);
             if (existingUser != null)
             {
@@ -53,30 +77,53 @@ namespace Lab7.Services
                 existingUser.Email = user.Email;
                 existingUser.DateOfBirth = user.DateOfBirth;
                 existingUser.PasswordHash = user.PasswordHash;
+
+                _logger.Information("User updated successfully: {@User}", existingUser);
+
                 return existingUser;
             }
-            return null;
+            else
+            {
+                _logger.Warning("User with id {UserId} not found", id);
+                return null;
+            }
         }
 
         public async Task<User> DeleteUserAsync(int id)
         {
+            _logger.Information("Attempting to delete user with id: {UserId}", id);
+
             var userToRemove = _users.FirstOrDefault(u => u.Id == id);
             if (userToRemove != null)
             {
                 _users.Remove(userToRemove);
+
+                _logger.Information("User deleted successfully: {@User}", userToRemove);
+
                 return userToRemove;
             }
-            return null;
+            else
+            {
+                _logger.Warning("User with id {UserId} not found", id);
+                return null;
+            }
         }
 
         public async Task<User> ValidateUser(string email)
         {
+            _logger.Information("Attempting to validate user with email: {UserEmail}", email);
+
             var existingUser = _users.FirstOrDefault(u => u.Email == email);
             if (existingUser != null)
             {
+                _logger.Information("User validated successfully: {@User}", existingUser);
                 return existingUser;
             }
-            return null;
+            else
+            {
+                _logger.Warning("User with email {UserEmail} not found", email);
+                return null;
+            }
         }
     }
 }
