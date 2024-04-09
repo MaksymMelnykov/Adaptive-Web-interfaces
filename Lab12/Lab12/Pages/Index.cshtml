@@ -1,0 +1,42 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Currency Tracker";
+}
+
+<h1 class="mb-4">Currency Tracker</h1>
+
+<div class="container">
+    @foreach (var group in Model.ExchangeRates.GroupBy(x => x.Key.Substring(0, 3)))
+    {
+        <div class="mb-5">
+            <h2 class="mb-3">@group.Key</h2>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Base Currency</th>
+                        @foreach (var currency in group)
+                        {
+                            <th>@currency.Key</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@group.Key</td>
+                        @foreach (var rate in group)
+                        {
+                            string[] currencyParts = rate.Key.Split('/');
+                            <td>@rate.Value @currencyParts[1]</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/js/site.js"></script>
