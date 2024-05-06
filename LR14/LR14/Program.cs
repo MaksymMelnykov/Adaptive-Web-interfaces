@@ -17,8 +17,7 @@ builder.Services.AddHostedService<WebsiteAvailabilityService>();
 builder.Services.AddHttpClient();
 
 builder.Services.AddSendGrid(options =>
-            options.ApiKey = "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");
-
+            options.ApiKey = builder.Configuration.GetValue<string>("SendGridApiKey"));
 
 builder.Services.AddQuartz(q =>
 {
