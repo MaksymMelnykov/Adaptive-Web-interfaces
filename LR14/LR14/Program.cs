@@ -5,10 +5,13 @@ using LR14.Interfaces;
 using LR14.Jobs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
+//using MySqlConnector;
 using Quartz;
 using SendGrid.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+var mysqlConnection = builder.Configuration.GetConnectionString("MySQLConnection");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -69,6 +72,24 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+
+    MySqlConnection connection = new MySqlConnection(mysqlConnection);
+    connection.Open();
+
+    MySqlCommand createTableFootballers = new MySqlCommand("create table Footballers (ID INT PRIMARY KEY NOT NULL, FullName varchar(255) NOT NULL, " +
+        "Club varchar(255) NOT NULL, Age INT NOT NULL)", connection);
+    createTableFootballers.ExecuteNonQuery();
+
+    MySqlCommand insertFootballers = new MySqlCommand("insert into Footballers (ID, FullName, Club, Age) values (1, 'Lionel Messi', 'Inter Miami', 36), " +
+        "(2, 'Mykhaylo Mudryk', 'Chelsea', 23)", connection);
+    insertFootballers.ExecuteNonQuery();
+
+    MySqlCommand selectFootballers = new MySqlCommand("select ID, FullName, Club, Age from Footballers", connection);
+    MySqlDataReader reader = selectFootballers.ExecuteReader();
+    while (reader.Read())
+    {
+        Console.WriteLine($"FootballerID: {reader.GetInt32(0)}, FullName: {reader.GetString(1)}, Club: {reader.GetString(2)} and Age: {reader.GetInt32(3)}");
+    }
 }
 
 app.UseWebSockets();
@@ -84,6 +105,3 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
-
-
-//BCxa0BW0sOY2z3gAUV77zu4F99tGcskw
